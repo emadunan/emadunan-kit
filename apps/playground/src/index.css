@@ -1,68 +1,134 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+/* ========== CSS Reset (modern normalize) ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+html,
+body {
+  height: 100%;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+:root {
+  --header-height: 3rem;
+  --footer-height: 12rem;
+
+  --laptopWidth: 64em;
+  --tabletWidth: 48em;
+  --largePhoneWidth: 37.5em;
+  --regularPhoneWidth: 30em;
+  --smallPhoneWidth: 22.5em;
+
+  /* ========== Brand Colors ========== */
+  --color-brand: #3b82f6;
+  --color-brand-hover: #2563eb;
+  --color-brand-active: #1d4ed8;
+  --color-brand-foreground: #ffffff;
+
+  /* ========== Backgrounds ========== */
+  --color-bg: #ffffff;
+  /* default page background */
+  --color-bg-muted: #f9fafb;
+  /* subtle sections */
+  --color-bg-subtle: #f3f4f6;
+  /* cards, panels */
+  --color-bg-inverse: #111827;
+  /* dark mode surfaces */
+
+  /* ========== Text ========== */
+  --color-text: #111827;
+  /* main text */
+  --color-text-muted: #6b7280;
+  /* secondary text */
+  --color-text-inverse: #ffffff;
+  /* on dark bg */
+  --color-text-accent: var(--color-brand);
+
+  /* ========== Border ========== */
+  --color-border: #e5e7eb;
+  --color-border-muted: #f3f4f6;
+  --color-border-strong: #d1d5db;
+
+  /* ========== States ========== */
+  --color-success: #22c55e;
+  --color-success-foreground: #ffffff;
+
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #ffffff;
+
+  --color-error: #ef4444;
+  --color-error-foreground: #ffffff;
+
+  --color-info: #3b82f6;
+  --color-info-foreground: #ffffff;
+
+  /* ========== Overlay & Shadows ========== */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+  /* ========== Focus & Interactive ========== */
+  --color-focus-ring: var(--color-brand);
+  --color-disabled-bg: #f3f4f6;
+  --color-disabled-text: #9ca3af;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+[data-theme="dark"] {
+  /* ========== Brand Colors ========== */
+  --color-brand: #60a5fa;
+  --color-brand-hover: #3b82f6;
+  --color-brand-active: #2563eb;
+  --color-brand-foreground: #0f172a;
+
+  /* ========== Backgrounds ========== */
+  --color-bg: #0f172a;
+  /* default page background (navy/black) */
+  --color-bg-muted: #1f2937;
+  /* subtle sections */
+  --color-bg-subtle: #374151;
+  /* cards, panels */
+  --color-bg-inverse: #f9fafb;
+  /* light mode surfaces (inverse) */
+
+  /* ========== Text ========== */
+  --color-text: #f9fafb;
+  /* main text */
+  --color-text-muted: #9ca3af;
+  /* secondary text */
+  --color-text-inverse: #111827;
+  /* on light bg */
+  --color-text-accent: var(--color-brand);
+
+  /* ========== Border ========== */
+  --color-border: #374151;
+  --color-border-muted: #1f2937;
+  --color-border-strong: #4b5563;
+
+  /* ========== States ========== */
+  --color-success: #22c55e;
+  --color-success-foreground: #0f172a;
+
+  --color-warning: #fbbf24;
+  --color-warning-foreground: #0f172a;
+
+  --color-error: #f87171;
+  --color-error-foreground: #0f172a;
+
+  --color-info: #60a5fa;
+  --color-info-foreground: #0f172a;
+
+  /* ========== Overlay & Shadows ========== */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
+
+  /* ========== Focus & Interactive ========== */
+  --color-focus-ring: var(--color-brand);
+  --color-disabled-bg: #1f2937;
+  --color-disabled-text: #6b7280;
 }

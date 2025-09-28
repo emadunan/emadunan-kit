@@ -1,9 +1,17 @@
-import React from 'react'
+import React from 'react';
+import styles from "./Layout.module.css";
 
-const Layout: React.FC = () => {
+interface Props {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const Layout: React.FC<Props> = ({ children, className }) => {
   return (
-    <div>Layout</div>
+    <div className={`${styles.layout} ${className || ''}`}>
+      {children}
+    </div>
   )
 }
 
-export default Layout
+export default Layout;

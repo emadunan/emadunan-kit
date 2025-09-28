@@ -1,15 +1,25 @@
 import './App.css';
-import { Layout, Footer, Header } from "@emadunan/react-ui";
+import logo from './assets/logo.png';
+import { Layout, Footer, Header, Main, Navbar, Logo } from "@emadunan/react-ui";
 
 function App() {
 
   return (
-    <>
-    <Header />
-    <Layout />
-    <Footer />
-    </>
+    <Layout>
+      <Header
+        title='Property Rents'
+        logo={<Logo><img src={logo}alt='App logo' /></Logo>}
+        actions={<div></div>}
+        nav={<Navbar links={[
+          { label: 'Add Property', href: '/add-property' },
+          { label: 'Register Rent', href: '/register-rent' },
+          { label: 'Reports', href: '/reports' },
+        ]}/>}
+      />
+      <Main>Main content</Main>
+      <Footer>This is the footer of the App</Footer>
+    </Layout>
   )
 }
 
-export default App
+export default App;

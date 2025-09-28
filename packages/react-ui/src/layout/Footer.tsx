@@ -1,9 +1,16 @@
-import React from 'react'
+import React from 'react';
+import styles from "./Footer.module.css";
 
-const Footer: React.FC = () => {
+interface Props extends React.HTMLAttributes<HTMLElement>{
+  children: React.ReactNode;
+}
+
+const Footer: React.FC<Props> = ({ children, className, ...rest }) => {
   return (
-    <div>Footer</div>
+    <footer className={`${styles.footer} ${className || ''}`} {...rest}>
+      {children}
+    </footer>
   )
 }
 
-export default Footer
+export default Footer;
