@@ -1,11 +1,12 @@
-import './App.css'
-import {} from "@emadunan/react-ui";
+import './App.css';
+ import { Button } from "@emadunan/react-ui/button";
+
 
 function App() {
 
   return (
     <>
-      
+      <Button appName='payload'>payload</Button>
     </>
   )
 }
