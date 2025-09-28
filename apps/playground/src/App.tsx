@@ -1,12 +1,13 @@
 import './App.css';
- import { Button } from "@emadunan/react-ui/button";
-
+import { Layout, Footer, Header } from "@emadunan/react-ui";
 
 function App() {
 
   return (
     <>
-      <Button appName='payload'>payload</Button>
+    <Header />
+    <Layout />
+    <Footer />
     </>
   )
 }
