@@ -6,7 +6,6 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "allowJs": true,
-    "noEmit": true,
     "types": ["vite/client"]
   }
 }

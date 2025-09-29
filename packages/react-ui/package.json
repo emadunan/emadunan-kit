@@ -1,12 +1,27 @@
 {
   "name": "@emadunan/react-ui",
-  "version": "0.0.0",
-  "private": true,
+  "license": "MIT",
+  "version": "1.0.1",
+  "private": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emadunan/emadunan-kit.git",
+    "directory": "packages/react-ui"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
+    "build": "tsc -p tsconfig.build.json",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit"
   },
