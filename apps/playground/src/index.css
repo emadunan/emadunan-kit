@@ -30,21 +30,14 @@ body {
 
   /* ========== Backgrounds ========== */
   --color-bg: #ffffff;
-  /* default page background */
-  --color-bg-muted: #f9fafb;
-  /* subtle sections */
-  --color-bg-subtle: #f3f4f6;
-  /* cards, panels */
-  --color-bg-inverse: #111827;
-  /* dark mode surfaces */
+  --color-bg-muted: #f9fafb;      /* subtle sections */
+  --color-bg-subtle: #f3f4f6;     /* cards, panels */
+  --color-bg-inverse: #111827;    /* dark mode surfaces */
 
   /* ========== Text ========== */
-  --color-text: #111827;
-  /* main text */
-  --color-text-muted: #6b7280;
-  /* secondary text */
-  --color-text-inverse: #ffffff;
-  /* on dark bg */
+  --color-text: #111827;          /* main text */
+  --color-text-muted: #6b7280;    /* secondary text */
+  --color-text-inverse: #ffffff;  /* on dark bg */
   --color-text-accent: var(--color-brand);
 
   /* ========== Border ========== */
@@ -55,15 +48,23 @@ body {
   /* ========== States ========== */
   --color-success: #22c55e;
   --color-success-foreground: #ffffff;
+  --color-success-hover: #16a34a;
+  --color-success-active: #15803d;
 
   --color-warning: #f59e0b;
   --color-warning-foreground: #ffffff;
+  --color-warning-hover: #d97706;
+  --color-warning-active: #b45309;
 
   --color-error: #ef4444;
   --color-error-foreground: #ffffff;
+  --color-error-hover: #dc2626;
+  --color-error-active: #b91c1c;
 
   --color-info: #3b82f6;
   --color-info-foreground: #ffffff;
+  --color-info-hover: #2563eb;
+  --color-info-active: #1d4ed8;
 
   /* ========== Overlay & Shadows ========== */
   --color-overlay: rgba(0, 0, 0, 0.5);
@@ -85,22 +86,15 @@ body {
   --color-brand-foreground: #0f172a;
 
   /* ========== Backgrounds ========== */
-  --color-bg: #0f172a;
-  /* default page background (navy/black) */
-  --color-bg-muted: #1f2937;
-  /* subtle sections */
-  --color-bg-subtle: #374151;
-  /* cards, panels */
-  --color-bg-inverse: #f9fafb;
-  /* light mode surfaces (inverse) */
+  --color-bg: #0f172a;            /* default page background */
+  --color-bg-muted: #1f2937;      /* subtle sections */
+  --color-bg-subtle: #374151;     /* cards, panels */
+  --color-bg-inverse: #f9fafb;    /* light mode surfaces (inverse) */
 
   /* ========== Text ========== */
   --color-text: #f9fafb;
-  /* main text */
   --color-text-muted: #9ca3af;
-  /* secondary text */
   --color-text-inverse: #111827;
-  /* on light bg */
   --color-text-accent: var(--color-brand);
 
   /* ========== Border ========== */
@@ -111,15 +105,23 @@ body {
   /* ========== States ========== */
   --color-success: #22c55e;
   --color-success-foreground: #0f172a;
+  --color-success-hover: #4ade80;
+  --color-success-active: #22c55e;
 
   --color-warning: #fbbf24;
   --color-warning-foreground: #0f172a;
+  --color-warning-hover: #facc15;
+  --color-warning-active: #eab308;
 
   --color-error: #f87171;
   --color-error-foreground: #0f172a;
+  --color-error-hover: #fca5a5;
+  --color-error-active: #f87171;
 
   --color-info: #60a5fa;
   --color-info-foreground: #0f172a;
+  --color-info-hover: #3b82f6;
+  --color-info-active: #2563eb;
 
   /* ========== Overlay & Shadows ========== */
   --color-overlay: rgba(0, 0, 0, 0.7);

@@ -1,0 +1,20 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  min-width: 18rem;
+  max-width: 90vw;
+  max-height: 90vh;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-radius: 0.125rem;
+  box-shadow: var(--shadow-lg);
+
+  padding: 1.25rem;
+  z-index: 1000;
+
+  overflow-y: auto;
+}
