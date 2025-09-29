@@ -1,14 +1,14 @@
 import React from "react";
 import styles from "./Layout.module.css";
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-const Layout: React.FC<Props> = ({ children, className }) => {
+const Layout: React.FC<Props> = ({ children, className, ...rest }) => {
   return (
-    <div className={`${styles.layout} ${className || ""}`}>{children}</div>
+    <div className={`${styles.layout} ${className || ""}`} {...rest}>{children}</div>
   );
 };
 
