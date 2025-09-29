@@ -2,7 +2,6 @@
   "name": "@emadunan/react-ui",
   "license": "MIT",
   "version": "1.0.1",
-  "private": false,
   "exports": {
     ".": {
       "import": "./dist/index.js",
