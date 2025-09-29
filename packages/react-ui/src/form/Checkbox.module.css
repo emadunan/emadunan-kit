@@ -1,0 +1,95 @@
+/* Wrapper */
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  font-family: inherit;
+}
+
+/* Checkbox base */
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  border: 1px solid var(--color-border);
+  border-radius: 0.125rem;
+  background-color: var(--color-bg);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+}
+
+/* Checked */
+.checkbox:checked {
+  background-color: var(--color-brand);
+  border-color: var(--color-brand);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 8L7 11L12 5' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+}
+
+/* Hover & Focus */
+.checkbox:hover {
+  border-color: var(--color-brand);
+}
+.checkbox:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
+}
+
+/* Disabled */
+.checkbox:disabled {
+  background-color: var(--color-disabled-bg);
+  border-color: var(--color-disabled-bg);
+  cursor: not-allowed;
+}
+
+/* Label text */
+.label {
+  color: var(--color-text);
+}
+
+/* Error */
+.error {
+  position: absolute;
+  bottom: -1.2rem;
+  left: 1.5rem;
+  color: var(--color-error);
+  line-height: 1.2;
+}
+
+/* ========== Size Variants ========== */
+.sm .checkbox {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.sm .label {
+  font-size: 0.8rem;
+}
+
+.md .checkbox {
+  width: 1rem;
+  height: 1rem;
+}
+
+.md .label {
+  font-size: 0.9rem;
+}
+
+.lg .checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.lg .label {
+  font-size: 1rem;
+}

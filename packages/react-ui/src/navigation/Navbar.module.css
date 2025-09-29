@@ -21,3 +21,8 @@
 .navLink:hover {
   color: var(--color-brand);
 }
+
+.navLink.active {
+  color: var(--color-brand-active);
+  border-bottom: 1px solid var(--color-brand-active);
+}

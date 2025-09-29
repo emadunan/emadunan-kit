@@ -27,7 +27,7 @@ const Header: React.FC<Props> = ({
       {nav}
 
       <div className={styles.actions}>
-        <Button label="Login" />
+        {actions}
       </div>
     </header>
   );
