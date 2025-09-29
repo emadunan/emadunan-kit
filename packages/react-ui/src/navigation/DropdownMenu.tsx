@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./DropdownMenu.module.css";
 
-export interface DropdownMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DropdownMenuProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   trigger: React.ReactNode;
   children: React.ReactNode;
 }
@@ -25,7 +26,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> & {
   }, []);
 
   return (
-    <div className={`${styles.dropdown} ${className || ""}`} ref={menuRef} {...rest}>
+    <div
+      className={`${styles.dropdown} ${className || ""}`}
+      ref={menuRef}
+      {...rest}
+    >
       <button
         className={styles.trigger}
         aria-haspopup="true"
@@ -52,15 +57,14 @@ export interface DropdownMenuItemProps {
 
 DropdownMenu.Item = ({ onClick, children }: DropdownMenuItemProps) => (
   <li role="menuitem">
-    <button
-      className={styles.menuItem}
-      onClick={onClick}
-    >
+    <button className={styles.menuItem} onClick={onClick}>
       {children}
     </button>
   </li>
 );
 
-DropdownMenu.Separator = () => <li role="separator" className={styles.separator} />;
+DropdownMenu.Separator = () => (
+  <li role="separator" className={styles.separator} />
+);
 
 export default DropdownMenu;

@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./Select.module.css";
 
-interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {
+interface SelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {
   children: React.ReactNode;
   error?: string;
   label?: string;

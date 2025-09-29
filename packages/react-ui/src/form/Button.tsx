@@ -8,7 +8,12 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
 }
 
-const Button: React.FC<Props> = ({ children, size = "md", className, ...rest }) => {
+const Button: React.FC<Props> = ({
+  children,
+  size = "md",
+  className,
+  ...rest
+}) => {
   return (
     <button
       className={`${styles.button} ${styles[size]} ${className || ""}`}

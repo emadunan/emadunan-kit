@@ -18,7 +18,7 @@ const Header: React.FC<Props> = ({
   ...rest
 }) => {
   return (
-    <header className={`${styles.header} ${className || ""}`} {...rest} >
+    <header className={`${styles.header} ${className || ""}`} {...rest}>
       <div className={styles.logo}>
         {logo}
         {title && <h1>{title}</h1>}
@@ -26,9 +26,7 @@ const Header: React.FC<Props> = ({
 
       {nav}
 
-      <div className={styles.actions}>
-        {actions}
-      </div>
+      <div className={styles.actions}>{actions}</div>
     </header>
   );
 };

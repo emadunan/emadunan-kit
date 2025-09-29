@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import styles from "./Layout.module.css";
 
 interface Props {
@@ -8,10 +8,8 @@ interface Props {
 
 const Layout: React.FC<Props> = ({ children, className }) => {
   return (
-    <div className={`${styles.layout} ${className || ''}`}>
-      {children}
-    </div>
-  )
-}
+    <div className={`${styles.layout} ${className || ""}`}>{children}</div>
+  );
+};
 
 export default Layout;
