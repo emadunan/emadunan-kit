@@ -11,18 +11,30 @@
   padding: 0;
 }
 
-.navLink {
+.navItem {
+  display: flex;
+  align-items: center;
+}
+
+/* Style all <a> inside navbar items */
+.navItem a {
   text-decoration: none;
   color: var(--color-text);
   font-weight: 500;
   transition: color 0.2s ease-in-out;
 }
 
-.navLink:hover {
+.navItem a:hover {
   color: var(--color-brand);
 }
 
-.navLink.active {
+/* .navItem a[aria-current="page"] {
   color: var(--color-brand-active);
   border-bottom: 1px solid var(--color-brand-active);
-}
+} */
+
+
+/* .navItem a.active {
+  color: var(--color-brand-active);
+  border-bottom: 1px solid var(--color-brand-active);
+} */

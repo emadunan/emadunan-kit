@@ -1,7 +1,7 @@
 {
   "name": "@emadunan/react-ui",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.13",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
-    "build": "tsc -p tsconfig.build.json && cpx 'src/**/*.module.css' dist",
+    "build": "tsc -p tsconfig.build.json && cpx 'src/**/*.css' dist",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit"
   },

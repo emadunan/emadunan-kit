@@ -52,14 +52,11 @@ function App() {
           </DropdownMenu>
         }
         nav={
-          <Navbar
-            links={[
-              { label: "Add Property", href: "/add-property" },
-              { label: "Register Rent", href: "/register-rent" },
-              { label: "Reports", href: "/reports" },
-            ]}
-            activeHref="/add-property"
-          />
+          <Navbar>
+            <a href="/">Home</a>
+            <a href="/create">Create</a>
+            <a href="/inquire" className="active">Inquire</a>
+          </Navbar>
         }
       />
       <Main>

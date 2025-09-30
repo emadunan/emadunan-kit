@@ -21,7 +21,7 @@ const Header: React.FC<Props> = ({
     <header className={`${styles.header} ${className || ""}`} {...rest}>
       <div className={styles.logo}>
         {logo}
-        {title && <h1>{title}</h1>}
+        {title && <h1 className={styles.title}>{title}</h1>}
       </div>
 
       {nav}

@@ -1,0 +1,37 @@
+/* reset.css — minimal reset using modern best practices */
+
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* Set core body defaults */
+html {
+  overflow-y: scroll;
+}
+
+html, body {
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Inherit font for form elements */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Reset buttons a bit */
+:where(button) {
+  all: unset;
+  cursor: pointer;
+}
