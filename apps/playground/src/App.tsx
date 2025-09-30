@@ -71,7 +71,7 @@ function App() {
             }}
           >
             <div
-              style={{ display: "flex", alignItems: "center", gap: ".3rem" }}
+              style={{ display: "flex", alignItems: "flex-start", gap: ".3rem" }}
             >
               <Select size="sm">
                 <Select.Option>EGP</Select.Option>
@@ -95,7 +95,7 @@ function App() {
             </div>
 
             <div
-              style={{ display: "flex", alignItems: "center", gap: ".3rem" }}
+              style={{ display: "flex", alignItems: "flex-end", gap: ".3rem" }}
             >
               <Select size="lg">
                 <Select.Option>EGP</Select.Option>
