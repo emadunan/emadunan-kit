@@ -10,7 +10,7 @@
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: 0.125rem;
-  line-height: 1.4; /* slightly relaxed, adapts across scripts */
+  line-height: 1.4;
 }
 
 /* menu base (positioned relative to .dropdown) */
@@ -31,16 +31,16 @@
   padding: 0.25rem 0;
   white-space: nowrap;
 
-  overflow: hidden; /* fix background spill */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
 /* menu items */
 .menuItem {
-  display: block;            /* full row clickable */
+  display: block;
   width: 100%;
-  padding-block: 0.4rem;     /* logical padding top/bottom */
-  padding-inline: 0.75rem;   /* logical padding left/right */
+  padding-block: 0.4rem; 
+  padding-inline: 0.75rem;
   text-align: start;
   cursor: pointer;
 
@@ -50,7 +50,7 @@
 
   font-size: 0.875rem;
   font: inherit;
-  line-height: 1.4;          /* flexible baseline */
+  line-height: 1.4;
   color: var(--color-text);
   box-sizing: border-box;
 }
@@ -62,8 +62,8 @@
 
 /* script-aware fine-tuning */
 .menuItem:lang(ar) {
-  line-height: 1.2;          /* tighten for Arabic */
-  padding-block: 0.35rem;    /* slightly less vertical padding */
+  line-height: 1.2; 
+  padding-block: 0.35rem;
 }
 
 /* separators */

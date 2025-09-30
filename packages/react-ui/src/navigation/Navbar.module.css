@@ -16,7 +16,6 @@
   align-items: center;
 }
 
-/* Style all <a> inside navbar items */
 .navItem a {
   text-decoration: none;
   color: var(--color-text);
@@ -27,14 +26,3 @@
 .navItem a:hover {
   color: var(--color-brand);
 }
-
-/* .navItem a[aria-current="page"] {
-  color: var(--color-brand-active);
-  border-bottom: 1px solid var(--color-brand-active);
-} */
-
-
-/* .navItem a.active {
-  color: var(--color-brand-active);
-  border-bottom: 1px solid var(--color-brand-active);
-} */
