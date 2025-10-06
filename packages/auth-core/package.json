@@ -1,0 +1,27 @@
+{
+  "name": "@emadunan/auth-core",
+  "version": "1.0.0",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "author": "emadunan",
+  "license": "ISC",
+  "description": "",
+  "peerDependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@reduxjs/toolkit": "^2.9.0",
+    "@types/node": "^24.7.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "async-mutex": "^0.5.0"
+  }
+}
