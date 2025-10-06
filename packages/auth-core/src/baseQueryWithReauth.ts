@@ -1,38 +1,50 @@
 import { Mutex } from "async-mutex";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+  QueryReturnValue,
+} from "@reduxjs/toolkit/query";
 
+/** Response from refresh endpoint */
 export interface RefreshResponse {
   access_token: string;
   user?: unknown;
 }
 
-export interface StorageDriver {
-  getItem(key: string): Promise<string | null> | string | null;
-  setItem(key: string, value: string): Promise<void> | void;
-  removeItem(key: string): Promise<void> | void;
-}
-
 const mutex = new Mutex();
 
 /**
- * Cross-platform base query with token refresh.
- * Apps can inject platform-specific storage + dispatch handlers.
+ * Base query wrapper with automatic token refresh for web.
+ * - Uses HttpOnly cookies for refresh token.
+ * - Stores access token in Redux (in-memory).
+ * - Automatically retries the original request after refresh.
  */
 export const createBaseQueryWithReauth = ({
   baseUrl,
-  storage,
   onRefreshSuccess,
   onRefreshFail,
 }: {
   baseUrl: string;
-  storage?: StorageDriver;
   onRefreshSuccess?: (data: RefreshResponse) => void;
   onRefreshFail?: () => void;
-}): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> => {
+}): BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta
+> => {
   const rawBaseQuery = fetchBaseQuery({
     baseUrl,
     credentials: "include",
+    prepareHeaders: (headers, { getState }) => {
+      // Optionally attach access token from Redux
+      const token = (getState() as any)?.auth?.accessToken;
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      return headers;
+    },
   });
 
   return async (args, api, extraOptions) => {
@@ -43,24 +55,34 @@ export const createBaseQueryWithReauth = ({
       if (!mutex.isLocked()) {
         const release = await mutex.acquire();
         try {
-          const refreshResult = await rawBaseQuery("/auth/refresh", api, extraOptions);
-          const data = refreshResult.data as RefreshResponse | undefined;
+          // Attempt token refresh using HttpOnly cookie
+          const refreshResult = (await rawBaseQuery(
+            "/auth/refresh",
+            api,
+            extraOptions
+          )) as QueryReturnValue<RefreshResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
+
+          const { data, error } = refreshResult;
+
+          if (error) {
+            onRefreshFail?.();
+            return refreshResult;
+          }
 
           if (data?.access_token) {
-            // persist new token (if desired)
-            await storage?.setItem?.("access_token", data.access_token);
+            // Update Redux state or call callback
             onRefreshSuccess?.(data);
 
-            // retry
+            // Retry original request
             result = await rawBaseQuery(args, api, extraOptions);
           } else {
-            await storage?.removeItem?.("access_token");
             onRefreshFail?.();
           }
         } finally {
           release();
         }
       } else {
+        // Wait for any ongoing refresh to complete
         await mutex.waitForUnlock();
         result = await rawBaseQuery(args, api, extraOptions);
       }
