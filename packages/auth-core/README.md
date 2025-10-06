@@ -1,5 +1,3 @@
-# 🧩 @emadunan/auth-core
-
 A lightweight, **cross-platform authentication helper** built on top of Redux Toolkit Query.  
 It exports a unified factory `createBaseQueryWithReauth()` that handles automatic token refresh for **Web**, **Mobile**, and **Node.js** environments — all with customizable storage and refresh behavior.
 
