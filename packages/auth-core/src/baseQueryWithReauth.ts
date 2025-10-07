@@ -2,7 +2,6 @@ import { Mutex } from "async-mutex";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import type {
   BaseQueryFn,
-  FetchArgs,
   FetchBaseQueryError,
   FetchBaseQueryMeta,
   QueryReturnValue,
@@ -30,18 +29,14 @@ export const createBaseQueryWithReauth = ({
   baseUrl: string;
   onRefreshSuccess?: (data: RefreshResponse) => void;
   onRefreshFail?: () => void;
-}): BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError,
-  FetchBaseQueryMeta
-> => {
+}): BaseQueryFn<any, unknown, unknown, {}, {}> => {
   const rawBaseQuery = fetchBaseQuery({
     baseUrl,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
-      // Optionally attach access token from Redux
       const token = (getState() as any)?.auth?.accessToken;
+      console.log("Preparing headers, access token:", token);
+
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
@@ -57,10 +52,17 @@ export const createBaseQueryWithReauth = ({
         try {
           // Attempt token refresh using HttpOnly cookie
           const refreshResult = (await rawBaseQuery(
-            "/auth/refresh",
+            {
+              url: "/auth/refresh",
+              method: "POST", // important!
+            },
             api,
-            extraOptions
-          )) as QueryReturnValue<RefreshResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
+            extraOptions,
+          )) as QueryReturnValue<
+            RefreshResponse,
+            FetchBaseQueryError,
+            FetchBaseQueryMeta
+          >;
 
           const { data, error } = refreshResult;
 
