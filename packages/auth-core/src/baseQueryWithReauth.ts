@@ -35,8 +35,6 @@ export const createBaseQueryWithReauth = ({
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any)?.auth?.accessToken;
-      console.log("Preparing headers, access token:", token);
-
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
