@@ -13,10 +13,12 @@
   "peerDependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@reduxjs/toolkit": "^2.9.0",
+    "react-redux": "^9.2.0",
     "@types/node": "^24.7.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3"
