@@ -1,30 +1,34 @@
-A lightweight, **cross-platform authentication helper** built on top of Redux Toolkit Query.  
-It exports a unified factory `createBaseQueryWithReauth()` that handles automatic token refresh for **Web**, **Mobile**, and **Node.js** environments — all with customizable storage and refresh behavior.
+# @emadunan/auth-core
+
+A lightweight **authentication helper for Web** built on top of [Redux Toolkit Query](https://redux-toolkit.js.org/rtk-query/overview).  
+This package provides a single factory `createBaseQueryWithReauth()` that wraps your `baseQuery` with **automatic token refresh** logic — using secure HttpOnly cookies for refresh tokens and in-memory access tokens.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Shared refresh-token logic across all platforms  
-- 🔄 Automatic token refresh on `401 Unauthorized`  
-- 🧱 Pluggable storage adapters (`localStorage`, `SecureStore`, memory, etc.)  
-- 🔐 Framework-agnostic — works with React, React Native, Next.js, and Node  
-- ⚙️ Customizable `baseUrl`, refresh endpoint, and hooks for success/failure  
+- ✅ Automatic token refresh on `401 Unauthorized`
+- 🌐 Web-focused implementation with HttpOnly cookies
+- 🧱 Lightweight and framework-agnostic (React, Vite, Next.js)
+- ⚡ Easy integration with Redux store
+- 🪝 Customizable success and failure hooks for refresh logic
 
 ---
 
 ## 🧠 Core Concept
 
-You implement your platform-specific “driver” using the factory:
+You use the factory:
 
 ```ts
 import { createBaseQueryWithReauth } from "@emadunan/auth-core";
 ```
 
-Each app provides its own:
-- `storage` adapter (where to store tokens)
-- `onRefreshSuccess` and `onRefreshFail` handlers (e.g., Redux dispatch)
-- `baseUrl` (your API root)
+and provide:
+- `baseUrl` — your API root
+- `onRefreshSuccess` — what to do when token refresh succeeds (e.g. update Redux state)
+- `onRefreshFail` — what to do when refresh fails (e.g. logout user)
+
+The helper handles calling your refresh endpoint (`/auth/refresh`) automatically when a request fails with 401.
 
 ---
 
@@ -32,166 +36,103 @@ Each app provides its own:
 
 ### `createBaseQueryWithReauth(options)`
 
-#### Parameters
 | Name | Type | Description |
-|------|------|--------------|
-| `baseUrl` | `string` | Base URL for all API requests. |
-| `storage` | `StorageAdapter` | Custom storage interface for token persistence. |
-| `onRefreshSuccess?` | `(data: any) => void` | Called when refresh succeeds (e.g., to update Redux credentials). |
-| `onRefreshFail?` | `() => void` | Called when refresh fails (e.g., logout user). |
-| `refreshPath?` | `string` | Optional custom refresh endpoint. Default: `/auth/refresh`. |
+|------|------|-------------|
+| `baseUrl` | `string` | Base URL for all API requests |
+| `onRefreshSuccess?` | `(data: RefreshResponse) => void` | Called after successful refresh |
+| `onRefreshFail?` | `() => void` | Called when refresh fails (e.g. logout) |
 
----
-
-### 🧱 `StorageAdapter` Interface
-
-To ensure platform independence, the library defines this minimal interface:
+#### `RefreshResponse`
 
 ```ts
-export interface StorageAdapter {
-  getItem(key: string): string | null | Promise<string | null>;
-  setItem(key: string, value: string): void | Promise<void>;
-  removeItem(key: string): void | Promise<void>;
+interface RefreshResponse {
+  access_token: string;
+  user?: unknown;
 }
 ```
 
-The adapter supports both synchronous (Web) and asynchronous (Mobile/Server) storage implementations.
-
 ---
 
-## 🧭 Platform Implementations
-
-### 🌐 Web
+## 🧭 Usage Example (React + Redux Toolkit Query)
 
 ```ts
+// src/api/baseQuery.ts
 import { createBaseQueryWithReauth } from "@emadunan/auth-core";
-import { setCredentials, logout } from "../slices/authSlice";
 import { store } from "../store";
+import { setCredentials, logout } from "../slices/authSlice";
 
-export const webBaseQuery = createBaseQueryWithReauth({
-  // For Vite apps
+export const baseQuery = createBaseQueryWithReauth({
   baseUrl: import.meta.env.VITE_API_URL!,
-  // For Nextjs apps 
-  baseUrl: process.env.NEXT_PUBLIC_API_URL!,
-  storage: {
-    getItem: (k) => localStorage.getItem(k),
-    setItem: (k, v) => localStorage.setItem(k, v),
-    removeItem: (k) => localStorage.removeItem(k),
-  },
   onRefreshSuccess: (data) => store.dispatch(setCredentials(data)),
   onRefreshFail: () => store.dispatch(logout()),
 });
 ```
 
----
-
-### 📱 Mobile (React Native / Expo)
+Then use `baseQuery` in your RTK Query API slice:
 
 ```ts
-import * as SecureStore from "expo-secure-store";
-import { createBaseQueryWithReauth } from "@emadunan/auth-core";
-import { setCredentials, logout } from "../slices/authSlice";
-import { store } from "../store";
+// src/api/apiSlice.ts
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQuery } from "./baseQuery";
 
-export const nativeBaseQuery = createBaseQueryWithReauth({
-  baseUrl: process.env.EXPO_PUBLIC_API_URL!,
-  storage: {
-    getItem: (k) => SecureStore.getItemAsync(k),
-    setItem: (k, v) => SecureStore.setItemAsync(k, v),
-    removeItem: (k) => SecureStore.deleteItemAsync(k),
-  },
-  onRefreshSuccess: (data) => store.dispatch(setCredentials(data)),
-  onRefreshFail: () => store.dispatch(logout()),
+export const apiSlice = createApi({
+  reducerPath: "api",
+  baseQuery,
+  endpoints: (builder) => ({
+    getUser: builder.query({
+      query: () => "/user",
+    }),
+  }),
 });
+
+export const { useGetUserQuery } = apiSlice;
 ```
 
 ---
 
-### 🧠 Node.js (Server / CLI)
+## ⚙️ How It Works
 
-```ts
-import { createBaseQueryWithReauth } from "@emadunan/auth-core";
-
-const memoryStore: Record<string, string> = {};
-
-export const serverBaseQuery = createBaseQueryWithReauth({
-  baseUrl: process.env.API_URL!,
-  storage: {
-    getItem: (k) => memoryStore[k],
-    setItem: (k, v) => { memoryStore[k] = v; },
-    removeItem: (k) => { delete memoryStore[k]; },
-  },
-});
-```
+1. Every request uses your `access_token` from Redux.
+2. If the request fails with a `401 Unauthorized`:
+   - It calls `POST /auth/refresh` with HttpOnly cookie.
+   - If refresh succeeds → dispatches `onRefreshSuccess` → retries original request.
+   - If refresh fails → calls `onRefreshFail` (e.g. logout).
+3. All concurrent requests are locked until refresh finishes (mutex).
 
 ---
 
-## ⚙️ Advanced Usage
-
-### 🧾 Custom Refresh Endpoint
-
-```ts
-const baseQuery = createBaseQueryWithReauth({
-  baseUrl: "https://api.example.com",
-  refreshPath: "/session/renew",
-  storage: localStorageAdapter,
-});
-```
-
----
-
-### 🔑 Access Token Key
-
-By default, the token is stored under the key `"access_token"`.  
-You can change this in your driver implementation if needed.
-
----
-
-## 🧩 Folder Structure Recommendation
-
-```
-apps/
-  web/
-    src/
-      slices/
-        authSlice.ts
-      api/
-        webBaseQuery.ts
-  mobile/
-    src/
-      slices/
-        authSlice.ts
-      api/
-        nativeBaseQuery.ts
-  server/
-    src/
-      api/
-        serverBaseQuery.ts
-
-packages/
-  auth-core/
-    src/
-      createBaseQueryWithReauth.ts
-      types.ts
-    README.md
-```
-
----
-
-## 🧰 Installation
+## 📦 Installation
 
 ```bash
-# Inside your monorepo root or project
-pnpm add @emadunan/auth-core
-# or
 npm install @emadunan/auth-core
 # or
 yarn add @emadunan/auth-core
+# or
+pnpm add @emadunan/auth-core
+```
+
+Ensure you also have the required peer dependencies installed:
+
+```bash
+npm install @reduxjs/toolkit react react-dom react-redux
 ```
 
 ---
 
-## 🧩 License
+## 🧰 Folder Structure Recommendation
 
-MIT © Emad Younan  
-Clean, composable, and cross-platform authentication layer.
+```
+src/
+  api/
+    baseQuery.ts
+    apiSlice.ts
+  slices/
+    authSlice.ts
+  store.ts
+```
+
+---
+
+## 🪪 License
+
+MIT © Emad Younan
