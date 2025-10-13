@@ -15,6 +15,7 @@ import {
   Checkbox,
   Spinner,
   Modal,
+  AutocompleteInput,
 } from "@emadunan/react-ui";
 import { IoMdArrowDropdown } from "react-icons/io";
 
@@ -80,6 +81,12 @@ function App() {
               </Select>
               <Input size="sm" />
               <Button size="sm">تعديل البيانات</Button>
+            </div>
+
+            <div
+              style={{ display: "flex", alignItems: "flex-start", gap: ".3rem" }}
+            >
+              <AutocompleteInput label="Districts" fetchSuggestions={() => Promise.resolve([{id: 1, name: "النظام"}, {id: 2, name: "المنتزة"}, {id: 2, name:"القومية"}, {id: 2, name:"العبور"}])} onSelect={() => {}}/>
             </div>
 
             <div
