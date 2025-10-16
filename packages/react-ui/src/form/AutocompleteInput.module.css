@@ -19,7 +19,9 @@
   font-family: inherit;
   color: var(--color-text);
   background-color: var(--color-bg);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   width: 100%;
 }
 
@@ -81,7 +83,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 90;
   margin-top: 0.25rem;
   width: 100%;
   background-color: var(--color-bg);

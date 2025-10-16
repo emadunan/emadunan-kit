@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import styles from "./AutocompleteInput.module.css";
+import React, { useState, useEffect, useRef } from 'react';
+import styles from './AutocompleteInput.module.css';
 
 interface Suggestion {
   id: number | string;
   name: string;
 }
 
-interface AutocompleteInputProps {
+interface AutocompleteInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'size' | 'onSelect'
+  > {
   label?: string;
   placeholder?: string;
   fetchSuggestions: (query: string) => Promise<Suggestion[]>;
   onSelect: (suggestion: Suggestion) => void;
   error?: string;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
@@ -21,15 +25,16 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   fetchSuggestions,
   onSelect,
   error,
-  size = "md",
+  size = 'md',
+  ...rest
 }) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(rest.value?.toString() || '');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
-  // 🔸 Fetch suggestions with debounce
+  // 🔸 Handle fetch suggestions with debounce
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -55,6 +60,15 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     };
   }, [query, fetchSuggestions]);
 
+  // 🔹 When user types directly
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+    // ⬇️ Fire onSelect with fake ID to indicate new value
+    onSelect({ id: 0, name: value });
+  };
+
+  // 🔸 When user picks from dropdown
   const handleSelect = (suggestion: Suggestion) => {
     setQuery(suggestion.name);
     setShowDropdown(false);
@@ -66,10 +80,11 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       {label && <label className={styles.label}>{label}</label>}
 
       <input
-        className={`${styles.input} ${error ? styles.errorInput : ""}`}
+        {...rest}
+        className={`${styles.input} ${error ? styles.errorInput : ''}`}
         value={query}
         placeholder={placeholder}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={handleChange}
         onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
       />
@@ -78,7 +93,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
 
       {showDropdown && (
         <ul className={`${styles.dropdown} ${styles.fadeIn}`}>
-          {loading && <li className={styles.loading}>جاري التحميل...</li>}
+          {loading && <li className={styles.loading}> ... </li>}
           {!loading && suggestions.length === 0 && (
             <li className={styles.noResults}>لا توجد نتائج</li>
           )}
@@ -87,7 +102,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
               <li
                 key={s.id}
                 className={styles.dropdownItem}
-                onMouseDown={() => handleSelect(s)} // 👈 use onMouseDown instead of onClick to avoid blur delay
+                onMouseDown={() => handleSelect(s)} // prevent blur before selection
               >
                 {s.name}
               </li>
