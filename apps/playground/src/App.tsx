@@ -16,6 +16,7 @@ import {
   Spinner,
   Modal,
   AutocompleteInput,
+  RadioGroup,
 } from "@emadunan/react-ui";
 import { IoMdArrowDropdown } from "react-icons/io";
 
@@ -86,7 +87,7 @@ function App() {
             <div
               style={{ display: "flex", alignItems: "flex-start", gap: ".3rem" }}
             >
-              <AutocompleteInput label="Districts" fetchSuggestions={() => Promise.resolve([{id: 1, name: "النظام"}, {id: 2, name: "المنتزة"}, {id: 2, name:"القومية"}, {id: 2, name:"العبور"}])} onSelect={() => {}}/>
+              <AutocompleteInput label="Districts" fetchSuggestions={() => Promise.resolve([{ id: 1, name: "النظام" }, { id: 2, name: "المنتزة" }, { id: 2, name: "القومية" }, { id: 2, name: "العبور" }])} onSelect={() => { }} />
             </div>
 
             <div
@@ -115,9 +116,27 @@ function App() {
             <Checkbox label="Save" size="sm" />
             <Checkbox label="Save" size="md" />
             <Checkbox label="Save" size="lg" />
-            <Spinner size="sm" />
-            <Spinner size="md" />
-            <Spinner size="lg" />
+
+            <div>
+              <Spinner size="sm" />
+              <Spinner size="md" />
+              <Spinner size="lg" />
+            </div>
+
+
+            <div>
+              <RadioGroup name="Test"
+                value="walid"
+                onChange={() => { }}
+                options={[
+                  { label: "Walid", value: "walid" },
+                  { label: "Rami", value: "rami" },
+                  { label: "Emad", value: "emad" },
+                  { label: "Hesham", value: "hesham" },
+                ]} />
+            </div>
+
+
             <Modal title="Delete Property" isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
               <h2>Hi there</h2>
               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At cumque distinctio qui voluptatum maiores illo eligendi ipsa quasi. Porro mollitia vel reiciendis deserunt corporis animi nesciunt rerum quasi qui beatae fugiat dolorem architecto quaerat veniam harum sequi eligendi, consectetur delectus consequuntur alias ducimus! Earum nobis veritatis voluptatibus modi, doloribus nulla blanditiis. Temporibus laboriosam officia minus sit repudiandae, enim expedita fugit illo cupiditate eius atque ullam fuga nisi excepturi dolore necessitatibus, voluptates vitae quos laudantium debitis ab molestias reprehenderit! Earum fuga excepturi debitis deleniti facilis incidunt aliquam ut a dolorum molestias assumenda nulla nihil distinctio ducimus, laborum rem tenetur, dicta beatae! Aut, sequi nulla ut vero exercitationem facere debitis error blanditiis veniam consectetur maiores omnis minima quae deleniti laudantium recusandae? Inventore repellendus aperiam quod quae molestiae dolor culpa rem velit impedit doloremque optio explicabo tempora illum dignissimos veniam, cupiditate, corporis laudantium in nostrum, incidunt ullam ea. Tempore nisi nam, qui corrupti quo doloribus dignissimos aliquid quod. Accusamus quia cumque nesciunt distinctio ex aliquid eaque magni, necessitatibus quidem commodi quos corporis. Ipsam odio quidem quibusdam dignissimos, quasi dolor, eaque incidunt velit architecto ex quaerat commodi veniam alias? Accusamus labore harum ipsa tempore dignissimos, aperiam aliquam suscipit iure deserunt expedita culpa distinctio quos.</p>
