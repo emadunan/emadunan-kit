@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@emadunan/react-ui": "workspace:*",
+    "@emadunan/react-ui": "workspace:^",
     "next": "^15.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
@@ -19,10 +19,7 @@
   "devDependencies": {
     "@emadunan/eslint-config": "workspace:*",
     "@emadunan/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
-    "eslint": "^9.34.0",
-    "typescript": "5.9.2"
+    "@types/react-dom": "19.1.1"
   }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "@emadunan/shared-utils",
+  "version": "1.0.1",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "clean": "rm -rf dist",
+    "format": "prettier . --write"
+  },
+  "keywords": [
+    "utils",
+    "typescript"
+  ],
+  "author": "emadunan",
+  "license": "ISC"
+}
