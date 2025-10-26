@@ -9,7 +9,7 @@ export function isValidMobile(number: string) {
   }
 }
 
-export function isValidEgyptianMobile(number: string): string | false {
+export function formatEgyptianMobile(number: string): string | false {
   try {
     // Normalize any extra spaces or symbols
     const cleaned = number.trim();
