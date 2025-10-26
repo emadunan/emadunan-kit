@@ -31,18 +31,22 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
-  // ✅ Cross-environment safe timeout ref
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const skipNextFetchRef = useRef(false);
 
-  // 🧠 Debounced fetchSuggestions
+  // ✅ Fetch suggestions (debounced)
   useEffect(() => {
+    // Prevent auto open on initial render
     if (!initialized) return;
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+    // Skip fetch caused by selection
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
+      return;
     }
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     if (!query.trim()) {
       setSuggestions([]);
@@ -65,22 +69,17 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     }, 300);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [query, fetchSuggestions, initialized]);
 
-  // 🖱️ Handle click outside (also close on label click)
+  // ✅ Handle outside clicks (label included)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const wrapper = wrapperRef.current;
       if (!wrapper) return;
 
       const labelEl = wrapper.querySelector('label');
-
-      // close dropdown if clicking outside OR on the label
       if (
         !wrapper.contains(event.target as Node) ||
         (labelEl && labelEl.contains(event.target as Node))
@@ -106,6 +105,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   };
 
   const handleSelect = (suggestion: Suggestion) => {
+    skipNextFetchRef.current = true; // prevent reopening
     setQuery(suggestion.name);
     setShowDropdown(false);
     onSelect(suggestion);
