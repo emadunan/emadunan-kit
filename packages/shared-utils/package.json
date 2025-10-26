@@ -1,6 +1,6 @@
 {
   "name": "@emadunan/shared-utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -20,7 +20,8 @@
     "build": "tsup",
     "watch": "tsup --watch",
     "clean": "rm -rf dist",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "utils",
