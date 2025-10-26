@@ -11,18 +11,18 @@ export function isValidMobile(number: string) {
 
 export function formatEgyptianMobile(number: string): string | false {
   try {
-    // Normalize any extra spaces or symbols
     const cleaned = number.trim();
-
-    // Always parse assuming Egypt as default country
     const phoneNumber = parsePhoneNumberFromString(cleaned, 'EG');
 
-    // Check validity and that it's a mobile type (starts with '1' after country code)
-    if (phoneNumber?.isValid() && phoneNumber.country === 'EG' && phoneNumber.number.startsWith('+201')) {
-      return phoneNumber.number; // returns standardized format like "+201003379933"
-    }
+    if (!phoneNumber?.isValid() || phoneNumber.country !== 'EG') return false;
 
-    return false;
+    // Enforce Egyptian mobile pattern (starts with 010, 011, 012, 015 + 8 digits)
+    const local = phoneNumber.nationalNumber; // e.g., "1003379933"
+    const mobileRegex = /^(10|11|12|15)\d{8}$/;
+
+    if (!mobileRegex.test(local)) return false;
+
+    return phoneNumber.number; // standardized format like "+201003379933"
   } catch {
     return false;
   }
