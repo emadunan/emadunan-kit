@@ -11,19 +11,26 @@ export function isValidMobile(number: string) {
 
 export function formatEgyptianMobile(number: string): string | false {
   try {
-    const cleaned = number.trim();
-    const phoneNumber = parsePhoneNumberFromString(cleaned, 'EG');
+    if (!number) return false;
 
-    if (!phoneNumber?.isValid() || phoneNumber.country !== 'EG') return false;
+    // Remove spaces and non-digit symbols except leading +
+    let cleaned = number.replace(/\s+/g, '').trim();
 
-    // Enforce Egyptian mobile pattern (starts with 010, 011, 012, 015 + 8 digits)
-    const local = phoneNumber.nationalNumber; // e.g., "1003379933"
+    // Normalize prefixes
+    if (cleaned.startsWith('0020')) cleaned = cleaned.replace(/^0020/, '');
+    else if (cleaned.startsWith('+20')) cleaned = cleaned.replace(/^\+20/, '');
+    else if (cleaned.startsWith('20')) cleaned = cleaned.replace(/^20/, '');
+    else if (cleaned.startsWith('0')) cleaned = cleaned.slice(1);
+
+    // Now we should have something like 10XXXXXXXXX
     const mobileRegex = /^(10|11|12|15)\d{8}$/;
 
-    if (!mobileRegex.test(local)) return false;
+    if (!mobileRegex.test(cleaned)) return false;
 
-    return phoneNumber.number; // standardized format like "+201003379933"
+    // Return standardized E.164 format
+    return `+20${cleaned}`;
   } catch {
     return false;
   }
 }
+
