@@ -1,6 +1,6 @@
 {
   "name": "@emadunan/shared-utils",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -28,8 +28,5 @@
     "typescript"
   ],
   "author": "emadunan",
-  "license": "ISC",
-  "dependencies": {
-    "libphonenumber-js": "^1.12.25"
-  }
+  "license": "ISC"
 }
