@@ -7,10 +7,7 @@ interface Suggestion {
 }
 
 interface AutocompleteInputProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'onSelect'
-  > {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onSelect'> {
   label?: string;
   placeholder?: string;
   fetchSuggestions: (query: string) => Promise<Suggestion[]>;
@@ -32,11 +29,20 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
-  // 🔸 Handle fetch suggestions with debounce
+  // ✅ Cross-environment safe timeout ref
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // 🧠 Debounced fetchSuggestions
   useEffect(() => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (!initialized) return;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
     if (!query.trim()) {
       setSuggestions([]);
@@ -44,31 +50,61 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       return;
     }
 
-    timeoutRef.current = window.setTimeout(async () => {
+    timeoutRef.current = setTimeout(async () => {
       setLoading(true);
       try {
         const data = await fetchSuggestions(query);
         setSuggestions(data);
         setShowDropdown(true);
+      } catch (err) {
+        console.error('Error fetching suggestions:', err);
+        setSuggestions([]);
       } finally {
         setLoading(false);
       }
     }, 300);
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     };
-  }, [query, fetchSuggestions]);
+  }, [query, fetchSuggestions, initialized]);
 
-  // 🔹 When user types directly
+  // 🖱️ Handle click outside (also close on label click)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
+
+      const labelEl = wrapper.querySelector('label');
+
+      // close dropdown if clicking outside OR on the label
+      if (
+        !wrapper.contains(event.target as Node) ||
+        (labelEl && labelEl.contains(event.target as Node))
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleFocus = () => {
+    if (!initialized) setInitialized(true);
+    if (suggestions.length > 0) setShowDropdown(true);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInitialized(true);
     const value = e.target.value;
     setQuery(value);
-    // ⬇️ Fire onSelect with fake ID to indicate new value
     onSelect({ id: 0, name: value });
   };
 
-  // 🔸 When user picks from dropdown
   const handleSelect = (suggestion: Suggestion) => {
     setQuery(suggestion.name);
     setShowDropdown(false);
@@ -76,7 +112,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   };
 
   return (
-    <div className={`${styles.wrapper} ${styles[size]}`}>
+    <div ref={wrapperRef} className={`${styles.wrapper} ${styles[size]}`}>
       {label && <label className={styles.label}>{label}</label>}
 
       <input
@@ -85,8 +121,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
         value={query}
         placeholder={placeholder}
         onChange={handleChange}
-        onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+        onFocus={handleFocus}
       />
 
       {error && <span className={styles.errorMessage}>{error}</span>}
@@ -102,7 +137,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
               <li
                 key={s.id}
                 className={styles.dropdownItem}
-                onMouseDown={() => handleSelect(s)} // prevent blur before selection
+                onMouseDown={() => handleSelect(s)}
               >
                 {s.name}
               </li>
