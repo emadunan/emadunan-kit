@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './AutocompleteInput.module.css';
 
 interface Suggestion {
-  id: number | string;
+  id: number | string | null;
   name: string;
 }
 
@@ -101,7 +101,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     setInitialized(true);
     const value = e.target.value;
     setQuery(value);
-    onSelect({ id: 0, name: value });
+
+    if (rest.onChange) {
+      rest.onChange(e); // Let parent handle text logic if needed
+    } else {
+      onSelect({ id: null, name: value }); // Fallback for uncontrolled usage
+    }
   };
 
   const handleSelect = (suggestion: Suggestion) => {

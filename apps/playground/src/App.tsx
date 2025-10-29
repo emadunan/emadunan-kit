@@ -17,6 +17,7 @@ import {
   Modal,
   AutocompleteInput,
   RadioGroup,
+  Pagination,
 } from "@emadunan/react-ui";
 import { IoMdArrowDropdown } from "react-icons/io";
 
@@ -151,6 +152,12 @@ function App() {
             </Modal>
           </div>
         </div>
+        <Pagination currentPage={8} pageSize={10} total={136} siblingCount={2} onChange={() => {}} variant="classic" labels={{
+          first: "الأول",
+          last: "الأخير",
+          prev: "السابق",
+          next: "التالي"
+        }}/>
       </Main>
       <Footer>
         <p>General Administration of Information Technology.</p>
