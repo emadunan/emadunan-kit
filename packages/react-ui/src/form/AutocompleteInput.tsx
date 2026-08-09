@@ -1,156 +1,216 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import styles from './AutocompleteInput.module.css';
 
-interface Suggestion {
-  id: number | string | null;
-  name: string;
-}
-
-interface AutocompleteInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onSelect'> {
-  label?: string;
-  placeholder?: string;
-  fetchSuggestions: (query: string) => Promise<Suggestion[]>;
-  onSelect: (suggestion: Suggestion) => void;
+export interface AutocompleteInputProps<T>
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'onSelect' | 'size' | 'value'
+  > {
+  value: string;
+  fetchSuggestions: (query: string) => Promise<T[]>;
+  getSuggestionKey: (suggestion: T) => React.Key;
+  getSuggestionLabel: (suggestion: T) => string;
+  onValueChange: (value: string) => void;
+  onSelect: (suggestion: T) => void;
+  renderSuggestion?: (suggestion: T) => ReactNode;
+  debounceMs?: number;
+  emptyMessage?: ReactNode;
   error?: string;
+  label?: string;
+  loadingMessage?: ReactNode;
+  minimumQueryLength?: number;
   size?: 'sm' | 'md' | 'lg';
 }
 
-const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
-  label,
-  placeholder,
+export default function AutocompleteInput<T>({
+  value,
   fetchSuggestions,
+  getSuggestionKey,
+  getSuggestionLabel,
+  onValueChange,
   onSelect,
+  renderSuggestion = getSuggestionLabel,
+  debounceMs = 300,
+  disabled,
+  emptyMessage = 'لا توجد نتائج',
   error,
+  id,
+  label,
+  loadingMessage = 'جار البحث...',
+  minimumQueryLength = 1,
   size = 'md',
-  ...rest
-}) => {
-  const [query, setQuery] = useState(rest.value?.toString() || '');
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [initialized, setInitialized] = useState(false);
-
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  ...inputProps
+}: AutocompleteInputProps<T>) {
+  const generatedId = useId();
+  const inputId = id ?? `autocomplete-${generatedId}`;
+  const listboxId = `${inputId}-listbox`;
+  const errorId = error ? `${inputId}-error` : undefined;
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const skipNextFetchRef = useRef(false);
+  const requestIdRef = useRef(0);
+  const [suggestions, setSuggestions] = useState<T[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ Fetch suggestions (debounced)
+  const query = value.trim();
+  const canSearch = !disabled && query.length >= minimumQueryLength;
+  const isOpen = isFocused && canSearch;
+
   useEffect(() => {
-    // Prevent auto open on initial render
-    if (!initialized) return;
-
-    // Skip fetch caused by selection
-    if (skipNextFetchRef.current) {
-      skipNextFetchRef.current = false;
-      return;
-    }
-
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-    if (!query.trim()) {
+    if (!canSearch) {
+      requestIdRef.current += 1;
       setSuggestions([]);
-      setShowDropdown(false);
+      setActiveIndex(-1);
+      setIsLoading(false);
       return;
     }
 
-    timeoutRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const data = await fetchSuggestions(query);
-        setSuggestions(data);
-        setShowDropdown(true);
-      } catch (err) {
-        console.error('Error fetching suggestions:', err);
-        setSuggestions([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 300);
+    const requestId = ++requestIdRef.current;
+    const timeout = window.setTimeout(() => {
+      setIsLoading(true);
+      void fetchSuggestions(query)
+        .then((results) => {
+          if (requestId !== requestIdRef.current) return;
+          setSuggestions(results);
+          setActiveIndex(results.length ? 0 : -1);
+        })
+        .catch(() => {
+          if (requestId !== requestIdRef.current) return;
+          setSuggestions([]);
+          setActiveIndex(-1);
+        })
+        .finally(() => {
+          if (requestId === requestIdRef.current) setIsLoading(false);
+        });
+    }, debounceMs);
 
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [query, fetchSuggestions, initialized]);
+    return () => window.clearTimeout(timeout);
+  }, [canSearch, debounceMs, fetchSuggestions, query]);
 
-  // ✅ Handle outside clicks (label included)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const wrapper = wrapperRef.current;
-      if (!wrapper) return;
-
-      const labelEl = wrapper.querySelector('label');
-      if (
-        !wrapper.contains(event.target as Node) ||
-        (labelEl && labelEl.contains(event.target as Node))
-      ) {
-        setShowDropdown(false);
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!wrapperRef.current?.contains(event.target as Node)) {
+        setIsFocused(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, []);
 
-  const handleFocus = () => {
-    if (!initialized) setInitialized(true);
-    if (suggestions.length > 0) setShowDropdown(true);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInitialized(true);
-    const value = e.target.value;
-    setQuery(value);
-
-    if (rest.onChange) {
-      rest.onChange(e); // Let parent handle text logic if needed
-    } else {
-      onSelect({ id: null, name: value }); // Fallback for uncontrolled usage
-    }
-  };
-
-  const handleSelect = (suggestion: Suggestion) => {
-    skipNextFetchRef.current = true; // prevent reopening
-    setQuery(suggestion.name);
-    setShowDropdown(false);
+  function selectSuggestion(suggestion: T): void {
+    onValueChange(getSuggestionLabel(suggestion));
     onSelect(suggestion);
-  };
+    setIsFocused(false);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+    inputProps.onKeyDown?.(event);
+    if (event.defaultPrevented) return;
+
+    if (event.key === 'ArrowDown' && isOpen && suggestions.length) {
+      event.preventDefault();
+      setActiveIndex((current) => (current + 1) % suggestions.length);
+    } else if (event.key === 'ArrowUp' && isOpen && suggestions.length) {
+      event.preventDefault();
+      setActiveIndex((current) =>
+        current <= 0 ? suggestions.length - 1 : current - 1,
+      );
+    } else if (event.key === 'Enter' && isOpen && activeIndex >= 0) {
+      const suggestion = suggestions[activeIndex];
+      if (suggestion) {
+        event.preventDefault();
+        selectSuggestion(suggestion);
+      }
+    } else if (event.key === 'Escape') {
+      setIsFocused(false);
+    }
+  }
 
   return (
     <div ref={wrapperRef} className={`${styles.wrapper} ${styles[size]}`}>
-      {label && <label className={styles.label}>{label}</label>}
+      {label && (
+        <label className={styles.label} htmlFor={inputId}>
+          {label}
+        </label>
+      )}
 
       <input
-        {...rest}
+        {...inputProps}
+        id={inputId}
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls={isOpen ? listboxId : undefined}
+        aria-describedby={errorId}
+        aria-expanded={isOpen}
+        aria-activedescendant={
+          isOpen && activeIndex >= 0
+            ? `${listboxId}-option-${activeIndex}`
+            : undefined
+        }
+        aria-invalid={Boolean(error)}
+        autoComplete="off"
         className={`${styles.input} ${error ? styles.errorInput : ''}`}
-        value={query}
-        placeholder={placeholder}
-        onChange={handleChange}
-        onFocus={handleFocus}
+        disabled={disabled}
+        value={value}
+        onChange={(event) => {
+          onValueChange(event.target.value);
+          setIsFocused(true);
+        }}
+        onBlur={(event) => {
+          setIsFocused(false);
+          inputProps.onBlur?.(event);
+        }}
+        onFocus={(event) => {
+          setIsFocused(true);
+          inputProps.onFocus?.(event);
+        }}
+        onKeyDown={handleKeyDown}
       />
 
-      {error && <span className={styles.errorMessage}>{error}</span>}
+      {error && (
+        <span id={errorId} className={styles.errorMessage}>
+          {error}
+        </span>
+      )}
 
-      {showDropdown && (
-        <ul className={`${styles.dropdown} ${styles.fadeIn}`}>
-          {loading && <li className={styles.loading}> ... </li>}
-          {!loading && suggestions.length === 0 && (
-            <li className={styles.noResults}>لا توجد نتائج</li>
+      {isOpen && (
+        <ul id={listboxId} className={styles.dropdown} role="listbox">
+          {isLoading && (
+            <li className={styles.loading} role="presentation">
+              {loadingMessage}
+            </li>
           )}
-          {!loading &&
-            suggestions.map((s) => (
+          {!isLoading && suggestions.length === 0 && (
+            <li className={styles.noResults} role="presentation">
+              {emptyMessage}
+            </li>
+          )}
+          {!isLoading &&
+            suggestions.map((suggestion, index) => (
               <li
-                key={s.id}
-                className={styles.dropdownItem}
-                onMouseDown={() => handleSelect(s)}
+                id={`${listboxId}-option-${index}`}
+                key={getSuggestionKey(suggestion)}
+                aria-selected={index === activeIndex}
+                className={`${styles.dropdownItem} ${
+                  index === activeIndex ? styles.activeDropdownItem : ''
+                }`}
+                role="option"
+                onMouseDown={(event) => event.preventDefault()}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => selectSuggestion(suggestion)}
               >
-                {s.name}
+                {renderSuggestion(suggestion)}
               </li>
             ))}
         </ul>
       )}
     </div>
   );
-};
-
-export default AutocompleteInput;
+}
