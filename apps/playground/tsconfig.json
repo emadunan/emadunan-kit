@@ -21,7 +21,6 @@
     "types": [
       "vite/client"
     ],
-    "baseUrl": ".",
     "paths": {
       "@emadunan/react-ui": [
         "../../packages/react-ui/src"
