@@ -8,11 +8,11 @@ readonly DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
 readonly REMOTE_PROJECT_DIR="${REMOTE_PROJECT_DIR:-/home/emad/projects/emadunan}"
 readonly APP_NAME="emadunan"
 
-if [[ ! -r "$DEPLOY_KEY" ]]; then
-  echo "❌ SSH key is not readable: $DEPLOY_KEY" >&2
-  echo "   Run from the directory containing 'key', or set DEPLOY_KEY=/path/to/key." >&2
-  exit 1
-fi
+# if [[ ! -r "$DEPLOY_KEY" ]]; then
+#   echo "❌ SSH key is not readable: $DEPLOY_KEY" >&2
+#   echo "   Run from the directory containing 'key', or set DEPLOY_KEY=/path/to/key." >&2
+#   exit 1
+# fi
 
 echo "🚀 Deploying $APP_NAME to $DEPLOY_USER@$DEPLOY_HOST..."
 
