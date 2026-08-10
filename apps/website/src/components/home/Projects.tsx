@@ -6,6 +6,58 @@ import Project from "./Project";
 const projects = [
   {
     number: "1",
+    title: "BahaaHelmy.com – Legal Website & Content Management Platform",
+    links: [
+      {
+        href: "https://github.com/emadunan/bahaahelmy",
+        label: "💻 GitHub Repository",
+      },
+      {
+        href: "https://bahaahelmy.com",
+        label: "🌐 Live Website",
+      },
+    ],
+    overview: `BahaaHelmy.com is an Arabic-first legal website and content management platform developed for Dr. Bahaa Helmy. It gives visitors a responsive, structured way to explore legal articles, publications, educational videos, professional services, and biographical information, as well as submit private consultation requests. A protected administration area enables authorized users to manage the site's content, users, featured items, and consultation workflow. I designed and developed the full platform, including its public experience, server-side application logic, database model, authentication, content migration, and production deployment.`,
+    features: [
+      "Arabic-first legal content with responsive public pages.",
+      "Articles, publications, and videos with featured ordering.",
+      "Secure consultation requests and status management.",
+      "Role-protected CMS for users and content administration.",
+      "Legacy WordPress content import and image processing tools.",
+    ],
+    technologies: [
+      "Next.js", "React", "TypeScript", "Server Actions", "Prisma", "PostgreSQL",
+      "NextAuth.js", "React Markdown", "Sharp", "CSS Modules", "Ubuntu", "Nginx", "PM2"
+    ],
+  },
+  {
+    number: "2",
+    title: "Inventory Demo – Inventory & Sales Management Platform",
+    links: [
+      {
+        href: "https://github.com/emadunan/inventory",
+        label: "💻 GitHub Repository",
+      },
+      {
+        href: "https://inventory-demo.emadunan.com",
+        label: "🌐 Live Demo",
+      },
+    ],
+    overview: `Inventory Demo is a full-stack inventory, sales, and purchasing management platform designed for businesses operating across multiple branches and stock locations. It provides role-specific workflows for sales staff, inventory managers, and administrators while maintaining a detailed audit trail of stock movement and payment activity. The system supports bilingual Arabic and English interfaces, product variants and barcodes, supplier management, inter-location transfers, stock counts, adjustments, returns, and branch-level reporting. I architected and developed the complete platform, including the React client, NestJS API, shared domain package, PostgreSQL data model, authentication, authorization, testing, and deployment.`,
+    features: [
+      "Sales, purchases, returns, payments, and supplier workflows.",
+      "Multi-location stock transfers, counts, and adjustments.",
+      "Product variants, barcode scanning, and label generation.",
+      "Role- and permission-based access with secure sessions.",
+      "Arabic/English UI with branch sales and stock audit reports.",
+    ],
+    technologies: [
+      "React", "Vite", "TypeScript", "Redux Toolkit", "NestJS", "TypeORM",
+      "PostgreSQL", "Passport.js", "JWT Auth", "i18next", "Jest", "CSS Modules", "Ubuntu", "Nginx", "PM2"
+    ],
+  },
+  {
+    number: "3",
     title: "Amen24.org – Multilingual Bible & Christian Library Platform",
     links: [
       {
@@ -36,7 +88,7 @@ const projects = [
     ],
   },
   {
-    number: "2",
+    number: "4",
     title: "Al-Atas.org – Family Heritage Platform",
     links: [
       {
@@ -61,7 +113,7 @@ const projects = [
     ],
   },
   {
-    number: "3",
+    number: "5",
     title: "Emadunan.com – Personal Portfolio",
     links: [
       {
@@ -86,7 +138,7 @@ const projects = [
     ],
   },
   {
-    number: "4",
+    number: "6",
     title: "MOI.gov.eg – Egyptian Ministry of Interior Portal",
     links: [
       {
@@ -107,7 +159,7 @@ const projects = [
     ],
   },
   {
-    number: "5",
+    number: "7",
     title: "Internal Secure Git Server & DevOps Automation",
     links: [],
     overview: `Built a centralized internal Git server using Gitea and Docker on Ubuntu, transforming 
@@ -126,7 +178,7 @@ Applied Agile concepts using GitHub Projects to track user stories, milestones, 
     ],
   },
   {
-    number: "6",
+    number: "8",
     title: "Confidential Police Systems",
     links: [],
     overview: `Confidential internal systems developed for law enforcement agencies to manage secure operational and administrative processes. These platforms support mission-critical functions such as case handling, personnel workflows, and internal communications — all under strict national security protocols. While the technical details remain classified, my role included architecting and developing components within highly secure environments, adhering to government standards for data protection, access control, and system resilience.`,
@@ -147,7 +199,7 @@ const Projects: React.FC = () => {
       <section className={styles.projects} id="projects">
         <h2 className={styles.title}>Projects</h2>
 
-        {projects.map((project, index) => (
+        {projects.map((project) => (
           <Project key={project.number} item={project} />
         ))}
       </section>
