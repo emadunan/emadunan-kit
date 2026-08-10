@@ -96,6 +96,9 @@ importers:
       '@next/mdx':
         specifier: ^15.4.4
         version: 15.5.20(@mdx-js/react@3.1.1(@types/react@19.2.2)(react@19.1.0))
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       masonic:
         specifier: ^4.1.0
         version: 4.1.0(react@19.1.0)
