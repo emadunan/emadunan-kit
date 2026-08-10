@@ -7,8 +7,8 @@ import ThemeToggle from "@/components/ui/ThemeToggler";
 
 
 export const metadata: Metadata = {
-  title: "EmadunanHub",
-  description: "Emadunan portfolio page and tools hub",
+  title: "Emad Younan",
+  description: "Emad Younan portfolio page, tools, blogs, qualifications, and certifications",
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
