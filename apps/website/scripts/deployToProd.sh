@@ -3,22 +3,26 @@ set -euo pipefail
 
 readonly DEPLOY_HOST="${DEPLOY_HOST:-192.248.180.123}"
 readonly DEPLOY_USER="${DEPLOY_USER:-emad}"
-readonly DEPLOY_KEY="${DEPLOY_KEY:-key}"
-readonly DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
+readonly DEPLOY_KEY="${DEPLOY_KEY:-}"
+readonly DEPLOY_BRANCH="${DEPLOY_BRANCH:-deploy}"
 readonly REMOTE_PROJECT_DIR="${REMOTE_PROJECT_DIR:-/home/emad/projects/emadunan}"
 readonly APP_NAME="emadunan"
 
-# if [[ ! -r "$DEPLOY_KEY" ]]; then
-#   echo "❌ SSH key is not readable: $DEPLOY_KEY" >&2
-#   echo "   Run from the directory containing 'key', or set DEPLOY_KEY=/path/to/key." >&2
-#   exit 1
-# fi
+deployment_ssh_options=(-o StrictHostKeyChecking=no)
+
+if [[ -n "$DEPLOY_KEY" ]]; then
+  if [[ ! -r "$DEPLOY_KEY" ]]; then
+    echo "❌ SSH key is not readable: $DEPLOY_KEY" >&2
+    exit 1
+  fi
+
+  deployment_ssh_options+=(-i "$DEPLOY_KEY")
+fi
 
 echo "🚀 Deploying $APP_NAME to $DEPLOY_USER@$DEPLOY_HOST..."
 
 ssh \
-  -i "$DEPLOY_KEY" \
-  -o StrictHostKeyChecking=no \
+  "${deployment_ssh_options[@]}" \
   "$DEPLOY_USER@$DEPLOY_HOST" \
   "bash -s -- '$REMOTE_PROJECT_DIR' '$DEPLOY_BRANCH' '$APP_NAME'" <<'EOF'
 set -euo pipefail
