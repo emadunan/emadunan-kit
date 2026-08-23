@@ -29,7 +29,7 @@ readonly APP_NAME="$3"
 
 export PATH="$HOME/.nvm/versions/node/v22.21.1/bin:$PATH"
 
-for command_name in git node pnpm pm2; do
+for command_name in git node npm pm2; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "❌ Required command not found on server: $command_name" >&2
     exit 1
@@ -52,10 +52,10 @@ echo "⬇️ Updating origin/$DEPLOY_BRANCH..."
 git pull --ff-only origin "$DEPLOY_BRANCH"
 
 echo "📥 Installing dependencies..."
-pnpm install --frozen-lockfile
+npm ci
 
 echo "🏗️ Building website..."
-pnpm --filter website build
+npm run build --workspace=website
 
 echo "♻️ Starting or reloading $APP_NAME..."
 pm2 startOrReload apps/website/ecosystem.config.js --only "$APP_NAME" --update-env

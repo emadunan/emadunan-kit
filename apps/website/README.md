@@ -1,21 +1,21 @@
 # Website
 
-Next.js app for emadunan.com inside the Emadunan pnpm workspace.
+Next.js app for emadunan.com inside the Emadunan npm workspace.
 
 ## Development
 
 ```bash
-pnpm --filter website dev
+npm run dev --workspace=website
 ```
 
 ## Build
 
 ```bash
-pnpm --filter website build
+npm run build --workspace=website
 ```
 
 ## Production
 
 ```bash
-pnpm --filter website start
+npm run start --workspace=website
 ```

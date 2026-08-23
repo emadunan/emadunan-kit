@@ -107,8 +107,6 @@ export const { useGetUserQuery } = apiSlice;
 npm install @emadunan/auth-core
 # or
 yarn add @emadunan/auth-core
-# or
-pnpm add @emadunan/auth-core
 ```
 
 Ensure you also have the required peer dependencies installed:
