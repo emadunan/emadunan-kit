@@ -8,7 +8,7 @@ module.exports = {
       name: "emadunan",
       cwd: rootDir,
       script: "sh",
-      args: "-c 'pnpm --filter website start'",
+      args: "-c 'npm run start --workspace=website'",
       env: {
         NODE_ENV: "production",
         PORT: 3030,

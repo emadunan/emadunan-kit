@@ -1,6 +1,6 @@
 # Emadunan
 
-Personal website, React UI components, and shared TypeScript packages in one pnpm/Turborepo monorepo.
+Personal website, React UI components, and shared TypeScript packages in one npm/Turborepo monorepo.
 
 ## Apps
 
@@ -17,17 +17,17 @@ Personal website, React UI components, and shared TypeScript packages in one pnp
 ## Commands
 
 ```bash
-pnpm install
-pnpm build
-pnpm dev
-pnpm check-types
-pnpm lint
+npm install
+npm run build
+npm run dev
+npm run check-types
+npm run lint
 ```
 
 Run a specific workspace with a filter:
 
 ```bash
-pnpm --filter website dev
-pnpm --filter @emadunan/react-ui build
-pnpm --filter @emadunan/playground dev
+npm run dev --workspace=website
+npm run build --workspace=@emadunan/react-ui
+npm run dev --workspace=@emadunan/playground
 ```
