@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
         <li>
           <strong>Facebook:</strong>{" "}
           <a
-            href="https://www.facebook.com/emad.younan.507578"
+            href="https://www.facebook.com/emadunan24"
             target="_blank"
             rel="noopener noreferrer"
           >
